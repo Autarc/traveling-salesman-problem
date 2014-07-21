@@ -209,7 +209,7 @@ define(function (require) {
 				try {
 
 					route = route.map(function (id) {
-						return logic.data.cities[id];
+						return logic.data.cities[id-1];
 					});
 
 					this.visualizer.intro = false;
