@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="content-type" content="text/html,charset=utf-8"/>
+
+  <title>:: TSP - Web ::</title>
+
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="stylesheet" type="text/css" href="style/defaults.css"/>
+	<link rel="stylesheet" type="text/css" href="style/style.css"/>
+
+</head>
+
+<body>
+
+	<div class="page">
+
+		<header class="header">
+			<h2>Traveling Salesman Problem</h2>
+			<!-- <input type="checkbox" id="debug"/>
+			<label for="debug">Debug</label> -->
+		</header>
+
+		<div class="main">
+
+			<div class="menu">
+
+				<div class="stats">
+					<div class="stat" id="stats-algo"></div>
+					<div class="stat" id="stats-distance"></div>
+					<ol class="stat stat-list" id="stats-history"></ol>
+				</div>
+
+				<div class="task task-1">
+					<button id="random">Random Route</button>
+					<button id="user">User Route</button>
+					<!-- <div class="active">Active</div> -->
+				</div>
+
+				<div class="task task-2 no-border">
+
+					<form id="SA-form">
+						<h3>
+							<span class="color color-SA"></span>
+							<span>Annealing</span>
+						</h3>
+
+						<div class="option">
+							<label class="attribute" for="SA-temperature">Temperature:</label>
+							<input class="value" id="SA-temperature" type="number" step="1" value="10000"/>
+						</div>
+
+						<div class="option">
+							<label class="attribute" for="SA-coolingRate">Cooling Rate:</label>
+							<input class="value" id="SA-coolingRate" type="number" step="0.0001" value="0.9999"/>
+						</li>
+
+						<div class="option">
+							<label class="attribute" for="SA-absoluteTemperature">Absolute Temperature:</label>
+							<input class="value" id="SA-absoluteTemperature" type="number" step="0.00001" value="0.00001" />
+						</div>
+
+						<input class="submit" type="submit" value="Use Annealing"/>
+					</form>
+
+				</div>
+
+				<div class="task task-3">
+
+					<form id="EV-form">
+						<h3>
+							<span class="color color-EV"></span>
+							<span>Evolutionary</span>
+						</h3>
+
+						<div class="option">
+							<label class="attribute" for="EV-maxGenerations">Generations:</label>
+							<input class="value" id="EV-maxGenerations" type="number" step="1" value="10" />
+						</div>
+
+						<input class="submit" type="submit" value="Use Evolutionary"/>
+					</form>
+
+				</div>
+
+				<div class="task task-4">
+
+					<form id="GEN-form">
+						<h3>
+							<span class="color color-GEN"></span>
+							<span>Genetic</span>
+						</h3>
+
+						<div class="option">
+							<label class="attribute" for="GEN-population">Population:</label>
+							<input class="value" id="GEN-population" type="number" step="1" value="100"/>
+						</div>
+
+						<div class="option">
+							<label class="attribute" for="GEN-maxGenerations">Generations:</label>
+							<input class="value"  id="GEN-maxGenerations" type="number" step="1" value="10" />
+						</div>
+
+						<div class="option">
+							<label class="attribute"  for="GEN-reproduction">Reproduction:</label>
+							<input class="value" id="GEN-reproduction" type="number" step="0.1" value="0.1"/>
+						</div>
+
+						<div class="option">
+							<label class="attribute" for="GEN-crossover">Cross-Over:</label>
+							<input class="value" id="GEN-crossover" type="number" step="0.1" value="0.6"/>
+						</div>
+
+						<div class="option">
+							<label class="attribute"  for="GEN-mutation">Mutation:</label>
+							<input class="value" id="GEN-mutation" type="number"  step="0.1" value="0.3"/>
+						</div>
+
+						<input class="submit" type="submit" value="Use Genetic"/>
+					</form>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="visual">
+			<div class="canvas-wrapper" id="canvas-wrapper"></div>
+		</div>
+
+	</div>
+
+
+<!-- code -->
+<script data-main="code/main" src="vendor/require.js"></script>
+
+</body>
+</html>

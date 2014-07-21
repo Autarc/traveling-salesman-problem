@@ -1,0 +1,114 @@
+/**
+ *  Style
+ *  =====
+ *
+ *
+ */
+
+.page {
+	padding: 2rem;
+}
+
+header {
+	margin-bottom: 2rem;
+}
+
+
+.main {
+
+
+}
+
+
+.menu {
+	display: inline-block;
+	width: 25%;
+	margin-right: 3%;
+	vertical-align: top;
+}
+
+
+.visual {
+	display: inline-block;
+	width: 70%;
+}
+
+
+.task {
+	padding: 1rem 0;
+	border-bottom: 1px solid black;
+}
+
+.no-border {
+	border: none;
+}
+
+.stats {
+/*	padding: 1rem 0;
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+*/
+	/*height: 20rem;*/
+
+
+	padding: 1rem;
+	/*border-bottom: 1px solid rgb(0, 0, 0);*/
+	/*border-top: 1px solid rgb(0, 0, 0);*/
+	height: 18rem;
+	background-color: rgb(78, 78, 78);
+	color: rgb(255, 255, 255);
+	font-size: 1.1rem;
+}
+
+.stat {
+	margin-bottom: 0.5rem;
+}
+
+.stat-list {
+	margin-top: 1rem;
+}
+
+.task-1,.task-2,.task-3,.task-4 {
+
+
+}
+
+.submit {
+
+	padding: 0.25rem;
+	font-size: 16px;
+	margin-top: 1rem;
+	text-align: right;
+}
+
+
+.option {
+	font-size: 1.2rem;
+}
+
+.attribute {
+	display: inline-block;
+	width: 50%;
+}
+
+.value {
+	text-align: center;
+}
+
+.color {
+	width: 1rem;
+	height: 1rem;
+	display: inline-block;
+}
+
+.color-SA {
+	background-color: green;
+}
+
+.color-EV {
+	background-color: purple;
+}
+
+.color-GEN {
+	background-color: orange;
+}

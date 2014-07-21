@@ -1,0 +1,51 @@
+/**
+ *  Defaults
+ *  ========
+ *
+ *
+ */
+
+*, *::after, *::before {
+
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+        box-sizing: border-box;
+}
+
+canvas {
+  border: 1px solid black;
+/*
+  -webkit-transform: scale(0.8);
+     -moz-transform: scale(0.8);
+      transform: scale(0.8);*/
+}
+
+button {
+  border: 1px solid black;
+
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  /*background-color: rgb(73, 64, 64);*/
+  /*color: rgb(255, 255, 255);*/
+  /*border-radius: 5px;*/
+}
+
+li {
+  display: inline-block;
+}
+
+input {
+
+  border: 1px solid black;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
