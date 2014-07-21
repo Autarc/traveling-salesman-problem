@@ -214,10 +214,10 @@ define(function (require) {
 
 					this.visualizer.intro = false;
 					this.visualizer.drawRoute(route);
-					this.visualizer.updateHistory(null, null, 'link');
+					this.visualizer.updateHistory(route, null, 'link');
 
 				} catch (e) {
-					// console.log('invalid - path');
+					// console.log(e);
 				}
 			}
 

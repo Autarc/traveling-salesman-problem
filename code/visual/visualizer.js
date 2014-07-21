@@ -385,13 +385,14 @@ define(function (require) {
 	 *  @param  {[type]} route    [description]
 	 *  @param  {[type]} distance [description]
 	 */
-	Visualizer.prototype.updateHistory = function(route, distance, algorithmus){
+	Visualizer.prototype.updateHistory = function(route, distance, algorithm){
 
 		var statsDistance = document.getElementById('stats-distance');
 		var statsHistory = document.getElementById('stats-history');
 		var statsAlgo = document.getElementById('stats-algo');
 
 		if (route) this.route = route;
+
 		this.distance = logic.getDistance(this.route);
 
 		if (distance != void 0) this.distance = distance;
@@ -400,7 +401,7 @@ define(function (require) {
 			return '<li>' + (city.id || city) + '</li>';
 		}).join(' - ');
 
-		statsAlgo.textContent = 'Algorithm: ' + algorithmus || '';
+		statsAlgo.textContent = 'Algorithm: ' + algorithm || '';
 		statsDistance.textContent = 'Distance: ' + this.distance;
 		statsHistory.innerHTML = text; // route
 	};
