@@ -141,7 +141,7 @@ define(function (require) {
 			this.refs.csv.addEventListener('click', function(){
 				var name = this.latest || 'Traveling-Salesman-Problem';
 
-				var text =  this.report.join('\r\n\r\n');
+				var text =  this.report.join('\r\n');
 
 				var link = document.createElement('a'),
 						blob = new Blob([ text ], { type: 'plain/text' });
