@@ -89,15 +89,15 @@ define(function(require){
 	}
 
 
-
 	function getRandom(list, size){
 		var pos = Math.random() * (size + 1);
 		return list.splice(pos, 1)[0];
 	}
 
+
 	function bruteForce(next) {
 
-		var worker = new Worker('/code/algo/force.js');
+		var worker = new Worker('code/algo/force.js');
 
 		var cities = data.cities.slice();
 		console.log('[BRUTE Force]', cities.length);
