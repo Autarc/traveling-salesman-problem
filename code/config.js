@@ -10,6 +10,7 @@ define({
   //
   debug: 0,
 
+  live: 'https://autarc.github.io/traveling-salesman-problem/',
 
   //
   source: 'data/tsp_Brazil.txt',

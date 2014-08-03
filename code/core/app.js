@@ -25,6 +25,9 @@ define(function (require) {
 	var App = function (config, path) {
 
 		this.debug = config.debug;
+		this.live = config.live;
+		this.report = [];
+		this.latest = null;
 
 		// this.interface = new Interface(config);
 		this.visualizer = new Visualizer(config.visual);
@@ -49,6 +52,7 @@ define(function (require) {
 			random:  document.getElementById('random'),
 			user: document.getElementById('user'),
 			force: document.getElementById('force'),
+			csv: document.getElementById('csv'),
 
 			SA: {
 				form: document.getElementById('SA-form'),
@@ -120,7 +124,6 @@ define(function (require) {
 
 		this.refs.user.addEventListener('click', function(){
 			this.visualizer.enableUserConnect();
-			// this.interface.showUserActove();
 		}.bind(this));
 
 		this.refs.force.addEventListener('click', function(){
@@ -131,6 +134,28 @@ define(function (require) {
 				this.visualizer.drawRoute(results.route, 'red');
 			}.bind(this));
 		}.bind(this));
+
+
+		if (URL) {
+
+			this.refs.csv.addEventListener('click', function(){
+				var name = this.latest || 'Traveling-Salesman-Problem';
+
+				var text =  this.report.join('\r\n\r\n');
+
+				var link = document.createElement('a'),
+						blob = new Blob([ text ], { type: 'plain/text' });
+
+				url = URL.createObjectURL(blob);
+
+				link.setAttribute('download', name + '.csv');
+				link.setAttribute('href', url);
+
+				link.dispatchEvent(new Event('click'));
+	    	URL.revokeObjectURL(url);
+		  }.bind(this));
+		}
+
 
 
 		var SA = this.refs.SA;
@@ -148,6 +173,28 @@ define(function (require) {
 			var time = Date.now();
 			var results = logic.simulatedAnnealing(params);
 			time = Date.now() - time;
+
+
+
+			var route = results.route.map(function (city) {
+				return city.id;
+			}).join('-');
+
+			// temperature // coolingRate // absoluteTemperature // time // distance // route
+			var measurements = [
+				params.temperature,
+				params.coolingRate,
+				params.absoluteTemperature,
+				time,
+				results.distance,
+				this.live + '#' + route
+			].join(',');
+
+			this.report.push(measurements);
+
+			this.latest = 'Simulated-Annealing';
+
+
 
 			this.visualizer.updateHistory(results.route, results.distance, 'Simulated Annealing', time);
 			this.visualizer.drawRoute(results.route, 'green');
@@ -168,6 +215,26 @@ define(function (require) {
 			var results = logic.evolutionary(params);
 			time = Date.now() - time;
 
+
+
+			var route = results.route.map(function (city) {
+				return city.id;
+			}).join('-');
+
+			// generations // time // distance // route
+			var measurements = [
+				params.generations,
+				time,
+				results.distance,
+				this.live + '#' + route
+			].join(',');
+
+			this.report.push(measurements);
+
+			this.latest = 'Evolutionary';
+
+
+
 			this.visualizer.updateHistory(results.route, results.distance, 'Evolutionary', time);
 			this.visualizer.drawRoute(results.route, 'purple');
 		}.bind(this));
@@ -183,15 +250,39 @@ define(function (require) {
 				generations: parseFloat(GEN.maxGenerations.value),
 				population: parseFloat(GEN.population.value),
 				p: {
-					mutation: parseFloat(GEN.mutation.value),
 					reproduction: parseFloat(GEN.reproduction.value),
-					crossover: parseFloat(GEN.crossover.value)
+					crossover: parseFloat(GEN.crossover.value),
+					mutation: parseFloat(GEN.mutation.value)
 				}
 			};
 
 			var time = Date.now();
 			var results = logic.genetic(params);
 			time = Date.now() - time;
+
+
+
+			var route = results.route.map(function (city) {
+				return city.id;
+			}).join('-');
+
+			// maxGenerations // population // reproduction // crossover // mutation // time // distance // route
+			var measurements = [
+				params.generations,
+			  params.population,
+				params.p.reproduction,
+				params.p.crossover,
+				params.p.mutation,
+				time,
+				results.distance,
+				this.live + '#' + route
+			].join(',');
+
+			this.report.push(measurements);
+
+			this.latest = 'Genetic';
+
+
 
 			this.visualizer.updateHistory(results.route, results.distance, 'Genetic', time);
 			this.visualizer.drawRoute(results.route, 'orange');
@@ -228,7 +319,7 @@ define(function (require) {
 
 			if (path) {
 
-				var route = path.split(','); // list of city ids
+				var route = path.split('-'); // list of city ids
 
 				try {
 
