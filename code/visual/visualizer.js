@@ -375,7 +375,7 @@ define(function (require) {
 
 		this.route.length = 0;
 		this.temp.length = 0;
-		this.updateHistory(null, null, 'user');
+		// this.updateHistory(null, null, 'user');
 	};
 
 

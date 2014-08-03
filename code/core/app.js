@@ -35,12 +35,13 @@ define(function (require) {
 	 *  @return {[type]}        [description]
 	 */
 	App.prototype.initElements = function (config) {
-
 		this.refs = {
 
 			debug: document.getElementById('debug'),
+
 			random:  document.getElementById('random'),
 			user: document.getElementById('user'),
+			force: document.getElementById('force'),
 
 			SA: {
 				form: document.getElementById('SA-form'),
@@ -113,6 +114,13 @@ define(function (require) {
 		this.refs.user.addEventListener('click', function(){
 			this.visualizer.enableUserConnect();
 			// this.interface.showUserActove();
+		}.bind(this));
+
+		this.refs.force.addEventListener('click', function(){
+			logic.bruteForce(function (results) {
+				this.visualizer.updateHistory(results.route, results.distance, 'Brute Force');
+				this.visualizer.drawRoute(results.route, 'red');
+			}.bind(this));
 		}.bind(this));
 
 
@@ -201,6 +209,7 @@ define(function (require) {
 			this.visualizer.setData();
 			this.visualizer.setupHandler();
 			this.visualizer.drawCities();
+
 
 			if (path) {
 
