@@ -73,8 +73,6 @@ define(function(require){
 
 	// array
 	function getDistance(route) {
-		// console.log(route);
-
 		var distance = 0;
 
 		for (var i = 0; i < route.length-1; i++) {
@@ -91,12 +89,32 @@ define(function(require){
 	}
 
 
-
 	function getRandom(list, size){
 		var pos = Math.random() * (size + 1);
 		return list.splice(pos, 1)[0];
 	}
 
+
+	function bruteForce(next) {
+
+		var worker = new Worker('code/algo/force.js');
+
+		var cities = data.cities.slice();
+		console.log('[BRUTE Force]', cities.length);
+		console.time('FORCE');
+		worker.postMessage([ cities, data.distances ]);
+
+		worker.addEventListener('message', function (e) {
+			var route = e.data;
+			next({
+				route: route,
+				distance: getDistance(route)
+			});
+			console.timeEnd('FORCE');
+		});
+
+		worker.addEventListener('error', console.error.bind(console));
+	}
 
 
 	function simulatedAnnealing(params){
@@ -113,15 +131,17 @@ define(function(require){
 		var distance = getDistance(oldOrder);
 		var nextOrder ;
 		var deltaDistance = 0 ;
+		var nextDistance = 0;
 
-		while (temperature>absoluteTemperature) {
-			nextOrder = swapRandomElements(oldOrder);
-			deltaDistance = getDistance(nextOrder) - distance;
+		while (temperature > absoluteTemperature) {
+			nextOrder = selectMutation(oldOrder);
+			nextDistance = getDistance(nextOrder);
+			deltaDistance = nextDistance - distance;
 
 			var boltzman = Math.exp(-deltaDistance / temperature) > Math.random();
 			if ((deltaDistance<0) || (distance>0 && boltzman )) {
-				olderOrder = nextOrder;
-				distance = deltaDistance + distance;
+				oldOrder = nextOrder;
+				distance = nextDistance;
 			}
 
 			temperature *= coolingRate;
@@ -136,20 +156,42 @@ define(function(require){
 		};
 	}
 
+	function selectMutation (list, id) {
+		var result;
+
+		if (id === 1) {
+			result = swapRandomElements(list);
+		} else {
+			result = insertMutation(list);
+		}
+		return result;
+	}
 
 	function swapRandomElements(list){
 		list = list.slice();
 
 		var firstRandomCityIndex = Math.random()*list.length|0;
-        var secondRandomCityIndex = Math.random()*list.length|0;
+    var secondRandomCityIndex = Math.random()*list.length|0;
 
-        var tmp = list[firstRandomCityIndex];
-        list[firstRandomCityIndex] = list[secondRandomCityIndex];
-        list[secondRandomCityIndex] = tmp;
+    var tmp = list[firstRandomCityIndex];
+    list[firstRandomCityIndex] = list[secondRandomCityIndex];
+    list[secondRandomCityIndex] = tmp;
 
-        return list;
+    return list;
 	}
 
+	function insertMutation(list){
+		list = list.slice();
+
+		var firstRandomCityIndex = Math.random()*list.length|0;
+    var secondRandomCityIndex = Math.random()*list.length|0;
+
+    //var tmp = list[firstRandomCityIndex];
+    var tmp = list.splice(firstRandomCityIndex, 1)[0];
+    list.splice(secondRandomCityIndex, 0, tmp);
+
+    return list;
+	}
 
 	function evolutionary(params){
 		var maxGenerations = params.generations;
@@ -164,14 +206,7 @@ define(function(require){
 
 
 			// #1 - random (single)
-			nextOrder = swapRandomElements(oldOrder);
-
-			// #2 - chunks split
-
-			// #3 - ?
-
-			// #4 - .... stable matching, verwendung der distance als preference
-
+			nextOrder = selectMutation(oldOrder,1);
 			newDistance = getDistance(nextOrder);
 			deltaDistance = newDistance - distance;
 
@@ -193,8 +228,6 @@ define(function(require){
 
 
 	function genetic(params){
-
-
 		var maxGenerations = params.generations,
 			populationSize = params.population;
 
@@ -226,7 +259,7 @@ define(function(require){
 
 				var p = Math.random();
 
-				if (p <= probability.reproduction) {
+				if (probability.reproduction !== 0 &&p <= probability.reproduction) {
 					// reproduction
 					var fitnessMax = Math.max.apply(Math, population.map(function(tour){
 						return tour.fitness;
@@ -236,76 +269,53 @@ define(function(require){
 						if (fitnessMax === population[i].fitness) break;
 					}
 
-					var fittest = population.splice(i, 1)[0];
+					var fittest = population[i];
+
 					nextPopulation.push(fittest);
 
-				} else if (population.length > 3 && p <= probability.reproduction + probability.crossover) {
+				}
 
+				p = Math.random();
+				if (nextPopulation.length < populationSize-1 && probability.crossover !== 0 && p <= probability.reproduction + probability.crossover) {
 					// crossover
-
-					var candidate1 = population.splice(Math.random() * population.length|0, 1)[0],
-						candidate2 = population.splice(Math.random() * population.length|0, 1)[0],
-						candidate3 = population.splice(Math.random() * population.length|0, 1)[0],
-						candidate4 = population.splice(Math.random() * population.length|0, 1)[0];
-
-					console.log('pop',population.length)
-
-
+					var canditatesPos = get4Canditates(population);
+					var candidate1 = population[canditatesPos[0]],
+						candidate2 = population[canditatesPos[1]],
+						candidate3 = population[canditatesPos[2]],
+						candidate4 = population[canditatesPos[3]];
 
 					// 1+2
-					var winner1 = null,//candidate2,
+					var winner1 = null,
 						winner2 = null;//candidate4;
-
-
-					// var winner = [
-					// 	candidate2,
-					// 	candidate4
-					// ],
-					// loser = [
-					// 	candidate1,
-					// 	candidate3
-					// ];
-
-					var loser1 = null,
-						loser2 = null;
-
-					console.log(candidate1,candidate2,candidate3,candidate4);
 
 					if (candidate1.fitness > candidate2.fitness) {
 						winner1 = candidate1;
-						loser1 = candidate2;
 					} else {
 						winner1 = candidate2;
-						loser1 = candidate1;
 					}
 
 					if (candidate3.fitness > candidate4.fitness) {
 						winner2 = candidate3;
-						loser2 = candidate4;
 					} else {
 						winner2 = candidate4;
-						loser2 = candidate3;
 					}
 
 					// Cross-Over Winner1 & Winner2
 					var winner = crossRoutes([winner1, winner2], chunkSize);
 
-					// Cross-Over Loser1 & Loser2
-					var loser = crossRoutes([loser1, loser2], chunkSize);
-
-					// push winner, looser into the new generation
 					nextPopulation.push.apply(nextPopulation, winner);
-					nextPopulation.push.apply(nextPopulation, loser);
+					//nextPopulation.push.apply(nextPopulation, loser);
 
-				} else{
+				}
+
+				 else{
 					// mutation
 					var pos = Math.random() * population.length|0;
-					var tour = population.splice(pos, 1)[0];
-					// console.log(tour)
-					// debugger;
+					var tour = population[pos];
 
-					tour.route = swapRandomElements(tour.route);
+					tour.route = selectMutation(tour.route);
 					tour.distance = getDistance(tour.route);
+
 					nextPopulation.push(tour);
 				}
 
@@ -319,7 +329,7 @@ define(function(require){
 
 		population = setFitness(population);
 
-		var fitnessMax = Math.max.apply(Math, population.map(function(fitness){
+		var fitnessMax = Math.max.apply(Math, population.map(function(tour){
 			return tour.fitness;
 		}));
 
@@ -336,6 +346,22 @@ define(function(require){
 		};
 	}
 
+	function get4Canditates (population) {
+		var candidates = [];
+
+		for (var i=0; i<4; i++) {
+			var inArray = true;
+			var pos;
+			while(inArray) {
+				pos = (Math.random()*population.length)|0;
+				if (candidates.indexOf(pos) === -1) {
+					inArray = false;
+					candidates.push(pos);
+				}
+			}
+		}
+		return candidates;
+	}
 
 	function setFitness(population) {
 
@@ -409,23 +435,17 @@ define(function(require){
 
 		var childPos = childPos1 ;
 		var counter = 0;
-		console.log(childPos)
+
 		tour1.route.forEach(function(city, i){
 			if (children1.route.indexOf(city) === -1) {
 				children1.route[childPos] = city;
 
 				childPos ++;
 				if (childPos > length-1) {
-					console.log('aaaa')
 					childPos = 0;
 				}
-				//console.log(childPos)
-
 			}
 		});
-
-
-		console.log(tour1.route.length);
 
 		childPos = childPos2;
 		tour2.route.forEach(function(city, i){
@@ -434,16 +454,10 @@ define(function(require){
 
 				childPos++;
 				if (childPos > length-1) {
-					console.log('bbb')
 					childPos = 0;
 				}
 			}
 		});
-
-		console.log(tour2.route.length);
-
-		// console.log(childPos1)
-		// console.log(children1, chunkSize)
 
 		// set distance
 		children1.distance = getDistance(children1.route);
@@ -454,9 +468,6 @@ define(function(require){
 			children2
 		];
 	}
-
-
-
 
 	return {
 		//
@@ -473,7 +484,9 @@ define(function(require){
 		//
 		simulatedAnnealing: simulatedAnnealing,
 		evolutionary: evolutionary,
-		genetic: genetic
+		genetic: genetic,
+
+		bruteForce: bruteForce
 	};
 
 });
