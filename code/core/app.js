@@ -5,6 +5,13 @@
  *
  */
 
+// time
+
+// cvs:
+// -
+// -
+//
+
 define(function (require) {
 
 	// var Interface = require('../visual/interface');
@@ -117,8 +124,10 @@ define(function (require) {
 		}.bind(this));
 
 		this.refs.force.addEventListener('click', function(){
+			var time = Date.now();
 			logic.bruteForce(function (results) {
-				this.visualizer.updateHistory(results.route, results.distance, 'Brute Force');
+				time = Date.now() - time;
+				this.visualizer.updateHistory(results.route, results.distance, 'Brute Force', time);
 				this.visualizer.drawRoute(results.route, 'red');
 			}.bind(this));
 		}.bind(this));
@@ -136,9 +145,11 @@ define(function (require) {
 				absoluteTemperature: parseFloat(SA.absoluteTemperature.value)
 			};
 
+			var time = Date.now();
 			var results = logic.simulatedAnnealing(params);
+			time = Date.now() - time;
 
-			this.visualizer.updateHistory(results.route, results.distance, 'Simulated Annealing');
+			this.visualizer.updateHistory(results.route, results.distance, 'Simulated Annealing', time);
 			this.visualizer.drawRoute(results.route, 'green');
 
 		}.bind(this));
@@ -153,9 +164,11 @@ define(function (require) {
 				generations: parseFloat(EV.maxGenerations.value)
 			};
 
+			var time = Date.now();
 			var results = logic.evolutionary(params);
+			time = Date.now() - time;
 
-			this.visualizer.updateHistory(results.route, results.distance, 'Evolutionary');
+			this.visualizer.updateHistory(results.route, results.distance, 'Evolutionary', time);
 			this.visualizer.drawRoute(results.route, 'purple');
 		}.bind(this));
 
@@ -176,9 +189,11 @@ define(function (require) {
 				}
 			};
 
+			var time = Date.now();
 			var results = logic.genetic(params);
+			time = Date.now() - time;
 
-			this.visualizer.updateHistory(results.route, results.distance, 'Genetic');
+			this.visualizer.updateHistory(results.route, results.distance, 'Genetic', time);
 			this.visualizer.drawRoute(results.route, 'orange');
 		}.bind(this));
 	};

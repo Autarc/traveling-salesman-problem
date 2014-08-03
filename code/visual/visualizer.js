@@ -385,11 +385,12 @@ define(function (require) {
 	 *  @param  {[type]} route    [description]
 	 *  @param  {[type]} distance [description]
 	 */
-	Visualizer.prototype.updateHistory = function(route, distance, algorithm){
+	Visualizer.prototype.updateHistory = function(route, distance, algorithm, time){
 
 		var statsDistance = document.getElementById('stats-distance');
 		var statsHistory = document.getElementById('stats-history');
 		var statsAlgo = document.getElementById('stats-algo');
+		var statsTime = document.getElementById('stats-time');
 
 		if (route) this.route = route;
 
@@ -404,6 +405,10 @@ define(function (require) {
 		statsAlgo.textContent = 'Algorithm: ' + algorithm || '';
 		statsDistance.textContent = 'Distance: ' + this.distance;
 		statsHistory.innerHTML = text; // route
+
+		if (time) {
+			statsTime.textContent = 'Time: ' + time;
+		}
 	};
 
 
