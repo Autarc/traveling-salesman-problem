@@ -406,9 +406,14 @@ define(function (require) {
 		statsDistance.textContent = 'Distance: ' + this.distance;
 		statsHistory.innerHTML = text; // route
 
-		if (time) {
-			statsTime.textContent = 'Time: ' + time;
+
+		text = '';
+
+		if (time != void 0) {
+			text = 'Time: ' + time;
 		}
+
+		statsTime.textContent = text;
 	};
 
 
