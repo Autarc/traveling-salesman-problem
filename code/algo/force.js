@@ -6,7 +6,6 @@
 
   // invoke, start
   this.addEventListener('message', function (e) {
-    console.log('start');
 
     // setup
     var args = e.data;
